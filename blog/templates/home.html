@@ -1,0 +1,51 @@
+{%extends 'base.html'%}
+{%block content%}
+<form action="{%url 'new'%}" method="POST">
+    {%csrf_token%}
+    <div class="input-group mb-3">
+        <input type="hidden" id="u_condition" value="{{condition}}">
+        <input type="hidden" name="user_id" value="{{user.id}}">
+        <input type="hidden" id="t_condition" value="{{time_check}}">
+        <input type="text" maxlength="50" class="form-control" style="width:85%" name="body">
+        <div class="input-group-append" style="width:5%">
+            <button class="btn btn-sm btn-dark" onclick="user_condition()" id="create_button">
+                <i class="material-icons">
+                    create
+                </i>
+            </button>
+        </div>
+    </div>
+</form>
+{{date}}
+{% for post in posts%}
+<p>
+    <span class="font-weight-bolder" style="font-size:1.25rem">{{post.body}}</span>
+    <span class="font-weight-lighter"style="font-size:0.9rem">{{post.pub_date.year}}.{{post.pub_date.month}}.{{post.pub_date.day}}</span>
+    <span class="font-weight-light" style="font-size:0.9rem"> {{post.user}} ONE LINE</span>
+</p>
+{% endfor%} 
+{%if posts.has_previous%}
+<a href="?page={{posts.previous_page_number}}" style="color: gray;"><<</a> 
+{%endif%} 
+<span class="font-weight-bolder text-muted">{{posts.number}}/{{posts.paginator.num_pages}}</span>
+{%if posts.has_next%}
+<a href="?page={{posts.next_page_number}}" style="color: gray;">>></a>
+{%endif%} 
+        <script>
+            function user_condition() {
+                u_condition = document.getElementById("u_condition").value
+                t_condition = document.getElementById("t_condition").value
+                if (u_condition == "인증") {
+                    if (t_condition == "True") {
+                        document.getElementById("create_button").disabled = true
+                        alert("이미 오늘 한 줄을 쓰셨습니다.")
+                    }
+                }
+                else{
+                    document.getElementById("create_button").disabled = true
+                    alert("로그인 해주세요")
+                    window.location.href = "/accounts/login"
+                }
+            }
+        </script>
+{%endblock%}
